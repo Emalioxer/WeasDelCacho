@@ -1,0 +1,59 @@
+#include "Jugador.h"
+#include <iostream>
+#include <vector>
+
+class JugadorHeuristico : public Jugador {
+public:
+    JugadorHeuristico(std::string nom="Emalioxer") : Jugador(nom) {}
+
+    int jugar(const std::map<std::string, Marcador>& /*marcadores*/,
+              const std::vector<Actuacion>& actuacionesPosibles,
+              const std::vector<int>& /*dados*/,
+              const Anotacion& /*resultadoPrevio*/) override {
+        
+        // Estrategia heurística básica:
+        // 1. Si existe una victoria inmediata ("dormida"), tomarla inmediatamente.
+        for (size_t i = 0; i < actuacionesPosibles.size(); ++i) {
+            if (actuacionesPosibles[i].accion == "dormida") {
+                std::cout << nombre << " declara DORMIDA y gana!" << std::endl;
+                return i;
+            }
+        }
+
+        //5. Otra wea para leer si hay jugadas asi bien pro como escalera, poker, full y eso.
+        for(size_t i=0; i<actuacionesPosibles.size(); ++i){
+            if(actuacionesPosibles[i].accion == "anotar" &&
+               actuacionesPosibles[i].anotacion.juego == "escalera"){
+                return i;
+            }
+            else if(actuacionesPosibles[i].accion == "anotar" &&
+                    actuacionesPosibles[i].anotacion.juego == "full"){
+                    return i;
+            }
+            else if(actuacionesPosibles[i].accion == "anotar" &&
+                    actuacionesPosibles[i].anotacion.juego == "poker"){
+                    return i;
+            }
+        }
+
+        //6. When no te sale nada :v DE MANO.
+        for(size_t i=0; i<actuacionesPosibles.size(); i++){
+            if(actuacionesPosibles[i].accion == "lanzar"){
+                //esta es la funcion pulenta adadadadasad
+                
+            }
+        }
+
+        // 2. Si hay una opción para anotar una jugada de alto valor (>= 30 pts) de manera directa
+        for (size_t i = 0; i < actuacionesPosibles.size(); ++i) {
+            if (actuacionesPosibles[i].accion == "anotar" && 
+                actuacionesPosibles[i].anotacion.puntos >= 20) {
+                return i;
+            }
+        }
+
+
+        // 4. Retorno de emergencia (último elemento disponible)
+        return actuacionesPosibles.size() - 1;
+    }
+};
